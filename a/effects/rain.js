@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 y: Math.random() * canvas.height,
                 speed: Math.random() * 2 + 1, // Random speed
                 radius: Math.random() * 4 + 1, // Random size for variation
-                char: 'ynb',
+                char: '♱',
                 opacity: Math.random() * 0.5 + 0.5 // Random opacity for trail effect
             });
         }
