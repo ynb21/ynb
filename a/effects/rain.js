@@ -7,14 +7,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const snowflakes = [];
 
     function createSnowflakes() {
-        const snowflakeCount = 100;
+        const snowflakeCount = 20;
         for (let i = 0; i < snowflakeCount; i++) {
             snowflakes.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
                 speed: Math.random() * 2 + 1, // Random speed
                 radius: Math.random() * 4 + 1, // Random size for variation
-                char: '5',
+                char: 'ynb',
                 opacity: Math.random() * 0.5 + 0.5 // Random opacity for trail effect
             });
         }
