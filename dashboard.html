@@ -12,59 +12,89 @@
         .dashboard input, .dashboard select { width: 100%; padding: 8px; margin-bottom: 20px; }
         .dashboard button { display: block; width: 100%; padding: 10px; background-color: #333; color: white; border: none; border-radius: 5px; cursor: pointer; }
         .dashboard button:hover { background-color: #555; }
+        .dashboard img { max-width: 100%; height: auto; display: block; margin: 20px 0; }
     </style>
 </head>
 <body>
     <div class="dashboard">
         <h2>Customize Your Biolink</h2>
-        <p>Page is working. Customize your settings below:</p>
 
-        <label for="profile">Profile Name</label>
-        <input type="text" id="profile" placeholder="Enter your profile name">
+        <label for="profilePic">Profile Picture (auto resized to 568x568)</label>
+        <input type="file" id="profilePic" accept="image/*">
+
+        <label for="background">Background Image</label>
+        <input type="file" id="background" accept="image/*">
 
         <label for="song">Biolink Song</label>
-        <select id="song">
-            <option value="Florin_Mitroi_Elicopter_De_Lupta_OD_mixx.mp3">Florin Mitroi - Elicopter De Lupta</option>
-            <option value="ynb.mp3">ynb.mp3</option>
-        </select>
+        <input type="file" id="song" accept="audio/*">
 
-        <label for="background">Background Color</label>
-        <input type="color" id="background" value="#ffffff">
-
-        <label for="cursor">Cursor Style</label>
-        <select id="cursor">
-            <option value="default">Default</option>
-            <option value="pointer">Pointer</option>
-            <option value="crosshair">Crosshair</option>
-        </select>
+        <label for="cursor">Cursor Image</label>
+        <input type="file" id="cursor" accept="image/*">
 
         <button onclick="saveSettings()">Save Changes</button>
+        
+        <img id="previewProfile" alt="Profile Preview" style="display: none;">
     </div>
 
     <script>
         function saveSettings() {
-            const profile = document.getElementById('profile').value;
-            const song = document.getElementById('song').value;
-            const background = document.getElementById('background').value;
-            const cursor = document.getElementById('cursor').value;
+            const profilePic = document.getElementById('profilePic').files[0];
+            const background = document.getElementById('background').files[0];
+            const song = document.getElementById('song').files[0];
+            const cursor = document.getElementById('cursor').files[0];
 
-            // Store settings in localStorage or send them to the server
-            localStorage.setItem('profile', profile);
-            localStorage.setItem('song', song);
-            localStorage.setItem('background', background);
-            localStorage.setItem('cursor', cursor);
+            if (profilePic) {
+                resizeImage(profilePic, 568, 568, (resizedDataUrl) => {
+                    localStorage.setItem('profilePic', resizedDataUrl);
+                    document.getElementById('previewProfile').src = resizedDataUrl;
+                    document.getElementById('previewProfile').style.display = 'block';
+                });
+            }
 
-            alert('Settings saved! Customize your biolink.');
+            if (background) {
+                const reader = new FileReader();
+                reader.onload = (e) => localStorage.setItem('backgroundImage', e.target.result);
+                reader.readAsDataURL(background);
+            }
+
+            if (song) {
+                const reader = new FileReader();
+                reader.onload = (e) => localStorage.setItem('songFile', e.target.result);
+                reader.readAsDataURL(song);
+            }
+
+            if (cursor) {
+                const reader = new FileReader();
+                reader.onload = (e) => localStorage.setItem('cursorImage', e.target.result);
+                reader.readAsDataURL(cursor);
+            }
+
+            alert('Settings saved! Your customizations will be applied.');
         }
 
-        // Optionally, load saved settings when the page is loaded
+        function resizeImage(file, width, height, callback) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    callback(canvas.toDataURL('image/png'));
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
         window.onload = function() {
-            document.getElementById('profile').value = localStorage.getItem('profile') || '';
-            document.getElementById('song').value = localStorage.getItem('song') || 'Florin_Mitroi_Elicopter_De_Lupta_OD_mixx.mp3';
-            document.getElementById('background').value = localStorage.getItem('background') || '#ffffff';
-            document.getElementById('cursor').value = localStorage.getItem('cursor') || 'default';
-        }
+            if (localStorage.getItem('profilePic')) {
+                document.getElementById('previewProfile').src = localStorage.getItem('profilePic');
+                document.getElementById('previewProfile').style.display = 'block';
+            }
+        };
     </script>
 </body>
 </html>
-
