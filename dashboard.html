@@ -19,6 +19,9 @@
     <div class="dashboard">
         <h2>Customize Your Biolink</h2>
 
+        <label for="biolinkName">Enter Biolink Name (e.g., "a" or "cosmic")</label>
+        <input type="text" id="biolinkName" placeholder="Enter biolink name" required>
+
         <label for="profilePic">Profile Picture (auto resized to 568x568)</label>
         <input type="file" id="profilePic" accept="image/*">
 
@@ -38,6 +41,12 @@
 
     <script>
         function saveSettings() {
+            const biolinkName = document.getElementById('biolinkName').value.trim();
+            if (!biolinkName) {
+                alert('Please enter a valid biolink name.');
+                return;
+            }
+
             const profilePic = document.getElementById('profilePic').files[0];
             const background = document.getElementById('background').files[0];
             const song = document.getElementById('song').files[0];
@@ -45,7 +54,7 @@
 
             if (profilePic) {
                 resizeImage(profilePic, 568, 568, (resizedDataUrl) => {
-                    localStorage.setItem('profilePic', resizedDataUrl);
+                    localStorage.setItem(`${biolinkName}_profilePic`, resizedDataUrl);
                     document.getElementById('previewProfile').src = resizedDataUrl;
                     document.getElementById('previewProfile').style.display = 'block';
                 });
@@ -53,23 +62,23 @@
 
             if (background) {
                 const reader = new FileReader();
-                reader.onload = (e) => localStorage.setItem('backgroundImage', e.target.result);
+                reader.onload = (e) => localStorage.setItem(`${biolinkName}_backgroundImage`, e.target.result);
                 reader.readAsDataURL(background);
             }
 
             if (song) {
                 const reader = new FileReader();
-                reader.onload = (e) => localStorage.setItem('songFile', e.target.result);
+                reader.onload = (e) => localStorage.setItem(`${biolinkName}_songFile`, e.target.result);
                 reader.readAsDataURL(song);
             }
 
             if (cursor) {
                 const reader = new FileReader();
-                reader.onload = (e) => localStorage.setItem('cursorImage', e.target.result);
+                reader.onload = (e) => localStorage.setItem(`${biolinkName}_cursorImage`, e.target.result);
                 reader.readAsDataURL(cursor);
             }
 
-            alert('Settings saved! Your customizations will be applied.');
+            alert(`Settings saved for biolink: ${biolinkName}`);
         }
 
         function resizeImage(file, width, height, callback) {
@@ -90,9 +99,30 @@
         }
 
         window.onload = function() {
-            if (localStorage.getItem('profilePic')) {
-                document.getElementById('previewProfile').src = localStorage.getItem('profilePic');
-                document.getElementById('previewProfile').style.display = 'block';
+            const biolinkName = prompt('Enter your biolink name to load settings:', '');
+            if (biolinkName) {
+                const profilePic = localStorage.getItem(`${biolinkName}_profilePic`);
+                const background = localStorage.getItem(`${biolinkName}_backgroundImage`);
+                const song = localStorage.getItem(`${biolinkName}_songFile`);
+                const cursor = localStorage.getItem(`${biolinkName}_cursorImage`);
+
+                if (profilePic) {
+                    document.getElementById('previewProfile').src = profilePic;
+                    document.getElementById('previewProfile').style.display = 'block';
+                }
+                if (background) {
+                    // Apply background
+                    document.body.style.backgroundImage = `url(${background})`;
+                }
+                if (cursor) {
+                    // Apply custom cursor
+                    document.body.style.cursor = `url(${cursor}), auto`;
+                }
+                if (song) {
+                    // Optionally, auto-play or load the song
+                    const audio = new Audio(song);
+                    audio.play();
+                }
             }
         };
     </script>
