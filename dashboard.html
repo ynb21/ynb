@@ -1,1 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f0f0f0; padding: 20px; }
+        .dashboard { max-width: 600px; margin: auto; padding: 20px; background-color: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); }
+        .dashboard h2 { text-align: center; }
+        .dashboard label { display: block; margin: 10px 0 5px; }
+        .dashboard input, .dashboard select { width: 100%; padding: 8px; margin-bottom: 20px; }
+        .dashboard button { display: block; width: 100%; padding: 10px; background-color: #333; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .dashboard button:hover { background-color: #555; }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <h2>Customize Your Biolink</h2>
+        <p>Page is working. Customize your settings below:</p>
+
+        <label for="profile">Profile Name</label>
+        <input type="text" id="profile" placeholder="Enter your profile name">
+
+        <label for="song">Biolink Song</label>
+        <select id="song">
+            <option value="Florin_Mitroi_Elicopter_De_Lupta_OD_mixx.mp3">Florin Mitroi - Elicopter De Lupta</option>
+            <option value="ynb.mp3">ynb.mp3</option>
+        </select>
+
+        <label for="background">Background Color</label>
+        <input type="color" id="background" value="#ffffff">
+
+        <label for="cursor">Cursor Style</label>
+        <select id="cursor">
+            <option value="default">Default</option>
+            <option value="pointer">Pointer</option>
+            <option value="crosshair">Crosshair</option>
+        </select>
+
+        <button onclick="saveSettings()">Save Changes</button>
+    </div>
+
+    <script>
+        function saveSettings() {
+            const profile = document.getElementById('profile').value;
+            const song = document.getElementById('song').value;
+            const background = document.getElementById('background').value;
+            const cursor = document.getElementById('cursor').value;
+
+            // Store settings in localStorage or send them to the server
+            localStorage.setItem('profile', profile);
+            localStorage.setItem('song', song);
+            localStorage.setItem('background', background);
+            localStorage.setItem('cursor', cursor);
+
+            alert('Settings saved! Customize your biolink.');
+        }
+
+        // Optionally, load saved settings when the page is loaded
+        window.onload = function() {
+            document.getElementById('profile').value = localStorage.getItem('profile') || '';
+            document.getElementById('song').value = localStorage.getItem('song') || 'Florin_Mitroi_Elicopter_De_Lupta_OD_mixx.mp3';
+            document.getElementById('background').value = localStorage.getItem('background') || '#ffffff';
+            document.getElementById('cursor').value = localStorage.getItem('cursor') || 'default';
+        }
+    </script>
+</body>
+</html>
 
